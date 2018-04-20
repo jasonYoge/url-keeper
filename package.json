@@ -1,0 +1,20 @@
+{
+  "name": "url-keeper",
+  "version": "1.0.0",
+  "description": "url keeper page",
+  "main": "index.js",
+  "repository": "https://github.com/planningFor/url-keeper.git",
+  "author": "planningFor <544305893@qq.com>",
+  "license": "MIT",
+  "dependencies": {
+    "react": "^16.3.2",
+    "react-dom": "^16.3.2",
+    "webpack": "^4.6.0"
+  },
+  "devDependencies": {
+    "source-map-loader": "^0.2.3",
+    "ts-loader": "^4.2.0",
+    "webpack-cli": "^2.0.14",
+    "webpack-dev-server": "^3.1.3"
+  }
+}
