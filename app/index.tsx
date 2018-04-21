@@ -8,7 +8,7 @@ class App extends React.Component<IAppProps, IAppState> {
     public render() {
         return (
             <div>
-                Hello Typescript!
+                Hello Typescript!!
             </div>
         )
     }

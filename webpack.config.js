@@ -1,41 +1,39 @@
 const path = require('path')
-const HtmlWebpackPlugin = require('html-webpack-plugin')
-const CleanWebpackPlugin = require('clean-webpack-plugin')
+const webpack = require('webpack')
+const merge = require('webpack-merge')
+const webpackDevServer = require('webpack-dev-server')
 
-const config = {
-    entry: path.resolve(__dirname, 'app', 'index.tsx'),
-    output: {
-        filename: 'app.bundle.js',
-        path: path.resolve(__dirname, 'build'),
-        publicPath: './'
-    },
-    devtool: 'source-map',
-    resolve: {
-        extensions: ['.js', '.ts', '.tsx', '.json']
-    },
-    module: {
-        rules: [{
-            test: /\.tsx?$/,
-            use: 'ts-loader'
-        }, {
-            test: /\.js$/,
-            use: ['source-map-loader'],
-            enforce: 'pre'
-        }]
-    },
-    mode: process.env.NODE_ENV || 'development',
-    // externals: {
-    //     'react': 'React',
-    //     'react-dom': 'ReactDOM'
-    // },
-    plugins: [
-        new CleanWebpackPlugin('build'),
-        new HtmlWebpackPlugin({
-            inject: true,
-            template: path.join(__dirname, 'index.html'),
-            title: 'My App'
-        })
-    ]
+const node_env = process.env.NODE_ENV
+const common_config_path = path.resolve('./', 'config', 'webpack.common.js')
+const dev_config_path = path.resolve('./', 'config', 'webpack.dev.js')
+const prod_config_path = path.resolve('./', 'config', 'webpack.prod.js')
+
+if (node_env === 'development') {
+    const common_config = require(common_config_path)
+    const dev_config = require(dev_config_path)
+
+    const config = merge(common_config, dev_config)
+    config.entry.app = [config.entry.app]
+    config.entry.app.unshift('webpack-dev-server/client?http://localhost:8080/')
+    const options = {
+        contentBase: path.resolve(__dirname, 'build'),
+        hot: true,
+        host: 'localhost',
+        inline: true,
+        port: 8080
+    }
+    webpackDevServer.addDevServerEntrypoints(config, options)
+
+    const server = new webpackDevServer(webpack(config), options)
+
+    server.listen(8080, 'localhost', () => {
+        console.log('dev server listening on port 8080')
+    })
 }
 
-module.exports = config
+if (node_env === 'production') {
+    const common_config = require(common_config_path)
+    const prod_config = require(prod_config_path)
+
+    const config = merge(common_config, prod_config)
+}
